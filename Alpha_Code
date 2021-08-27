@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+
+int num_codes_i(int input[], int size, int *arr, int n){
+  arr[0] = 1;
+  arr[1] = 1;
+  for(int i = 2; i <= n ; i++){
+    arr[i] = arr[i - 1];
+    if(input[i-2] * 10 + input[i-1] <= 26)
+      arr[i]+= arr[i-2];
+  }
+  int output = arr[n];
+  delete [] arr;
+  return output;
+}
+
+int num_codes(int input[], int size, int *arr){
+  if(size == 0)
+    return 1;
+  if(size == 1)
+    return 1;
+  if(arr[size] > 0)
+    return arr[size];
+  int output = num_codes(input, size-1, arr);
+  if(input[size-2]*10 + input[size] <= 26){
+    output += num_codes(input, size-2, arr);
+  }
+  return output;
+}
+
+int main() 
+{
+  int input[] = {1,1,2,3};
+  int *arr = new int[5];
+  cout << num_codes(input, 4, arr) << '\n';
+  cout << num_codes_i(input, 4 , arr, 4);  
+}
