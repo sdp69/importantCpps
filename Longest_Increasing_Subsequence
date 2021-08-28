@@ -1,0 +1,34 @@
+#include <iostream>
+using namespace std;
+
+int lis(int *input, int n){
+  int *output = new int[n];
+  output[0] = 1;
+  for(int i = 1; i < n; i++){
+    output[i] = 1;
+    for(int j = i-1; j >= 0; j--){
+      if(input[j] > output[i])
+        continue;
+      int best = output[j] + 1;
+      if(best > output[i])
+        output[i] = best;
+    }
+  }
+  int best__ = 0;
+  for(int i = 0; i < n ; i++){
+    if(best__ < output[i])
+      best__ = output[i];
+  }
+  delete [] output;
+  return best__;
+}
+
+int main() 
+{
+   int n; cin >> n;
+   int *input = new int[n];
+   for(int i = 0 ; i < n; i++){
+       cin >> input[i];
+   }
+   cout << lis(input, n);
+}
