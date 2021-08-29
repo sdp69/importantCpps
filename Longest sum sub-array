@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+
+int lssa(int *arr, int n){
+  int current_sum_found = 0;
+  int best_found_till_now = 0;
+  for(int i = 0; i < n; i++){
+    if(arr[i] < 0){
+      int c = -1 * arr[i];
+      current_sum_found += c > current_sum_found ? -1*current_sum_found:arr[i];
+      //cout << c << " " << current_sum_found << '\n';
+    }
+    if(arr[i] > 0){
+      current_sum_found+=arr[i];
+      //cout << "> 0" << " " << current_sum_found << '\n';
+    }
+    if(current_sum_found > best_found_till_now)
+      best_found_till_now = current_sum_found;
+  }
+  return best_found_till_now;
+}
+
+int main() 
+{
+    int arr[9] = {-2,1,-3,4,-1,2,1,-5,4};
+    int n = sizeof(arr)/4;
+    cout << lssa(arr, n);
+    return 0;
+}
