@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int lcs_iterative(char *a, char *b){
+  int m = strlen(a);
+  int n = strlen(b);
+  int **dypm = new int*[m+1];
+  for(int i = 0; i < m+1 ; i++){
+    dypm[i] = new int[n+1];
+  }
+  for(int i = 0; i < m+1; i++)
+    dypm[i][0] = 0;
+  for(int i = 0; i < n+1; i++)
+    dypm[0][i] = 0;
+  for(int i = 1; i < m + 1; i++){
+    for(int j = 1; j < n+1; j++){
+      if(a[m-i] == b[n-j])
+        dypm[i][j] = 1 + dypm[i-1][j-1];
+      else
+        dypm[i][j] = max(dypm[i-1][j], dypm[i][j-1]);
+    }
+  }
+  int ans = dypm[m][n];
+  for(int i = 0; i < m+1; i++)
+    delete [] dypm[i];
+  delete [] dypm;
+  return ans;
+}
+
+int lcs(char *a, char *b, int la, int lb, int **dp){
+  if(la == 0 || lb == 0)
+    return 0;
+  if(dp[la][lb] > -1)
+    return dp[la][lb];
+  int ans = 0;
+  if(a[0] == b[0])
+    ans = 1+lcs(a+1, b+1, la-1, lb-1, dp);
+  else{
+    int output = lcs(a, b+1, la, lb-1, dp);
+    int output2 = lcs(a+1, b, la-1, lb, dp);
+    ans = max(output, output2);
+  }
+  dp[la][lb] = ans;
+  return ans;
+}
+int lcsArray(char *a, char *b, int la, int lb){
+  int **dp = new int*[la+1];
+  for(int i = 0; i < la+1; i++){
+    dp[i] = new int[lb+1];
+    for(int j = 0; j < lb+1; j++)
+      dp[i][j] = -1;
+  }
+  return lcs(a, b, la, lb, dp);
+}
+
+int main() {
+  char a[100];
+  char b[100];
+  cin >> a;
+  cin >> b;
+  int la = strlen(a);
+  int lb = strlen(b);
+  cout << lcs_iterative(a, b) << '\n';
+  cout << lcsArray(a, b,la, lb) << '\n';
+  return 0;
+}
