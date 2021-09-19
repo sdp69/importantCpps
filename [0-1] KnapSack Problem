@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int knapsack_recursive(int *wt, int *val, int **arr, int n, int Tw){
+  if(n == 0 || Tw == 0)
+    return 0;
+
+  else if(wt[n-1] > Tw)
+    return knapsack_recursive(wt, val, arr, n-1, Tw);
+  
+  else{
+    if(arr[n-1][Tw] > -1)
+      return arr[n][Tw];
+
+    int value = max(val[n-1]+knapsack_recursive(wt, val, arr, n-1, Tw - wt[n-1]), knapsack_recursive(wt, val, arr, n - 1 , Tw));
+    arr[n-1][Tw-1] = value;
+    return value; 
+  }
+}
+
+int knapsack_iterative(int Tw, int *wt, int *val, int n){
+  int **arr = new int*[n+1];
+  for(int i = 0 ; i < n+1; i++)
+    arr[i] = new int[Tw+1];
+  for(int i = 0; i < Tw+1; i++)
+    arr[0][i] = 0;
+  for(int i = 0; i < n+1; i++)
+    arr[i][0] = 0;
+  for(int i = 1; i < n+1; i++){
+    for(int j = 0; j < Tw+1; j++){
+      arr[i][j] = arr[i-1][j];
+      if(wt[i-1] <= j)
+      arr[i][j] = max(arr[i][j], val[i-1]+arr[i-1][j - wt[i-1]]);
+    }
+  }
+  int answer = arr[n][Tw];
+  for(int i = 0; i < n+1; i++)
+    delete [] arr[i];
+  delete [] arr;
+return answer;
+}
+
+int main() {
+  int n = 4; int W = 5;
+  int **arr = new int*[n+1];
+  for(int i = 0 ; i < n+1; i++){
+    arr[i] = new int[W+1];
+    for(int j = 0; j < W+1; j++){
+      arr[i][j] = -1;
+    }
+  }
+  int val[4]{5, 4, 8, 6};
+  int wt[4]{1, 2, 3 ,5};
+  cout << "Recursive: " <<knapsack_recursive(wt, val, arr, n, W) << '\n';
+  cout << "Iterative: " << knapsack_iterative(W, wt, val, n);
+  for(int i = 0; i < n+1; i++)
+    delete [] arr[i];
+  delete [] arr;
+  return 0;
+}
